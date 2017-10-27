@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+ 
+ <struts>
+<!-- name="struts.devMode 表示为开发模式
+		value="true"   表示不需要重启tomcat 
+-->
+<constant name="struts.devMode" value="true" />
+ 	
+<package name="clazzlist" extends="struts-default">
+	 	<!--  <action name="select" class="com.tao.action.ClazzAction" method="select">
+			<result name="success">/admin/mclass.jsp</result>
+	 	</action>  -->	
+	 	<action name="selectclasslist" class="com.tao.action.StudentmanAction" method="selectclasslist">
+				<result name="success">/teacher/clazzlist.jsp</result>
+	 	</action> 
+	 <!--  <action name="addclasslist" class="com.tao.action.StudentmanAction" method="addclasslist">
+						<result name="success">/student/clazzlist.jsp</result>
+	 	</action>   -->
+	 	<action name="deleteclasslist" class="com.tao.action.StudentmanAction" method="deleteclasslist">
+				<result name="success">/teacher/clazzlist.jsp</result>
+	 	</action> 
+	 	<!-- 查询全部学生 -->
+	 	<action name="selectstu" class="com.tao.action.StudentmanAction" method="selectstu">
+				<result name="success">/teacher/clazzstudent.jsp</result>	
+				</action> 
+		<action name="selectall" class="com.tao.action.StudentmanAction" method="selectall">
+				<result name="success">/teacher/clazzstudent.jsp</result>	
+	 	</action> 
+	</package> 	
+	
+	 <package name="studentman" extends="json-default">
+ 	 <action name="addstu" class="com.tao.action.StudentmanAction" method="addstu">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 
+	 	<action name="deletestu" class="com.tao.action.StudentmanAction" method="deletestu">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 
+	 	<action name="updatestu" class="com.tao.action.StudentmanAction" method="updatestu">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 	
+	 	
+	 	
+	 	<action name="selectcollege" class="com.tao.action.StudentmanAction" method="selectcollege">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 	
+	 	<action name="selectmajor" class="com.tao.action.StudentmanAction" method="selectmajor">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 	
+	 	<action name="selectclazz" class="com.tao.action.StudentmanAction" method="selectclazz">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 	
+	 	 <action name="addclasslist" class="com.tao.action.StudentmanAction" method="addclasslist">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action> 	 
+	 	<!--修改  -->
+	 	
+	 	<action name="selectcount" class="com.tao.action.StudentmanAction" method="selectcount">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+	 	</action>
+
+ </package> 
+	
+</struts>

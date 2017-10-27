@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+ <struts>
+ 
+ 		<package name="Task_execute" extends="json-default" namespace="/Task_execute">
+ 
+ 			<!-- 添加教师信息 -->
+ 			<action name="save_draft" class="com.tao.action.Task_executeAction" method="save_draft">
+			 <result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+			</action>
+			
+					
+		<!--添加课后作业  -->
+		<action name="instanceTask" class="com.tao.action.Task_executeAction" method="instanceTask">
+			<result type="json">
+				<param name="root">responseJSON</param>
+			</result> 
+		</action>
+		</package>
+		
+		
+		<package name="Task_execute2" extends="struts-default" namespace="/Task_execute2">
+ 
+ 			<!-- 添加教师信息 -->
+ 			<action name="getwork" class="com.tao.action.Task_executeAction" method="select">
+			 <result name="success">/student/myhomework.jsp</result> 
+			</action>
+			
+			<action name="selectList" class="com.tao.action.Task_executeAction" method="select_answer">
+				<result name="success">/student/homework.jsp</result>
+			</action>
+		</package>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </struts>

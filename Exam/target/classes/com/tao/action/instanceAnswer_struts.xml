@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="jinstanceAnswer" extends="json-default" namespace="/instanceAnswer">
+	
+			<!-- 添加听力资源  -->
+			<action name="addInstanceAnswer" class="com.tao.action.InstanceAnswerAction" method="addInstanceAnswer"> 
+			  <result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+			</action>
+			
+					
+		<!-- 学生查询正在上的课 -->
+		<action name="selectClazz" class="com.tao.action.InstanceAnswerAction" method="selectClazz">
+			<result type="json">
+				<param name="root">responseJSON</param>
+			</result> 
+		</action> 
+		
+		<!-- 学生答题 -->
+		<action name="updateAnswer" class="com.tao.action.InstanceAnswerAction" method="updateAnswer">
+			<result type="json">
+				<param name="root">responseJSON</param>
+			</result> 
+		</action> 
+			
+	</package>
+
+	<package name="instanceAnswer" extends="struts-default" namespace="/instanceAnswer">
+		
+		<!-- 查询听力资源 -->
+		<action name="selectAnswer" class="com.tao.action.InstanceAnswerAction" method="selectAnswer">
+			<result name="success">/student/ktlist.jsp</result>
+		</action>
+		
+		 				
+		<!-- 学生分页查询子题 -->
+		<action name="packetIdselect" class="com.tao.action.InstanceAnswerAction" method="packetIdselect">
+			<result name="success">/student/zktlist.jsp</result>
+		</action>
+		
+		<!-- 学生查询分数 -->
+		<action name="stuScore" class="com.tao.action.InstanceAnswerAction" method="stuScore">
+			<result name="success">/student/score.jsp</result>
+		</action>
+		
+		<!-- 老师查询分数 -->
+		<action name="teaScore" class="com.tao.action.InstanceAnswerAction" method="teaScore">
+			<result name="success">/teacher/scoreList.jsp</result>
+		</action>
+		
+		<!-- 学生查询已完成课程详情 -->
+		<action name="stuSelquestion" class="com.tao.action.InstanceAnswerAction" method="stuSelquestion">
+			<result name="success">/student/kt_questionlist.jsp</result>
+		</action>
+		
+		
+	</package>
+</struts>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.Task_executeMapper"> 
+
+	<select id="selectTotalRows" resultType="java.lang.Integer">
+		 
+		 <!-- select count(*)   from plan p,     
+    			(select i.info_id,i.info_name,tpi.start_time,tpi.token,tpi.plan_id,tpi.task_package_name,tpi.task_package_id,tpi.instance_id from info i,          
+    			(select p.info_id,p.start_time,p.token,p.plan_id,thp.task_package_name,thp.task_execute_id,thp.task_package_id,thp.instance_id from plan_instance p,          
+    			(select ta.task_package_id,ta.task_package_name,t.task_execute_id,t.instance_id from task_package ta,          
+    			(select task_execute_id,task_package_id,token from task_execute where info_id=#{params.info_id} and task_execute_finish=#{params.task_execute_finish})t     
+    			where ta.task_package_id=t.task_package_id) thp where p.instance_id = thp.instance_id) tpi where i.info_id = tpi.info_id) ttea     
+    			where p.plan_id = ttea.plan_id  -->
+    			
+    	select count(*)   from	
+		(select p.info_id,p.info_name,p.start_time,p.token,p.plan_id,p.plan_name,thp.task_package_name,thp.task_package_id from plan_instance p,
+		(select ta.task_package_id,ta.task_package_name,tb.token from task_package ta,
+		(select task_package_id,token,task_execute_finish,i.info_id from task_execute t, 
+		(select info_id,clazz_id from info where info_id=#{params.info_id}) i
+		where t.clazz_id=i.clazz_id and t.task_execute_finish=#{params.task_execute_finish}) tb where ta.task_package_id=tb.task_package_id) thp where p.token=thp.token) tb2
+	</select>
+	<select id="selectPageList" resultType="Task_execute">
+    			
+    			<!-- select p.plan_id,p.plan_name,ttea.info_id,info_name,ttea.start_time,ttea.token,ttea.task_package_name,ttea.task_package_id,ttea.instance_id   from plan p,     
+    			(select i.info_id,i.info_name,tpi.start_time,tpi.token,tpi.plan_id,tpi.task_package_name,tpi.task_package_id,tpi.instance_id from info i,          
+    			(select p.info_id,p.start_time,p.token,p.plan_id,thp.task_package_name,thp.task_execute_id,thp.task_package_id,thp.instance_id from plan_instance p,          
+    			(select ta.task_package_id,ta.task_package_name,t.task_execute_id,t.instance_id from task_package ta,          
+    			(select task_execute_id,task_package_id,instance_id from task_execute where info_id=#{params.info_id} and task_execute_finish=#{params.task_execute_finish})t     
+    			where ta.task_package_id=t.task_package_id) thp where p.instance_id = thp.instance_id) tpi where i.info_id = tpi.info_id) ttea     
+    			where p.plan_id = ttea.plan_id
+    			limit #{start},#{pageCount} -->
+    			
+    	select p.info_id,p.info_name,p.start_time,p.token,p.plan_id,p.plan_name,thp.task_execute_id,thp.task_package_name,thp.task_package_id from plan_instance p,
+		(select ta.task_package_id,ta.task_package_name,tb.task_execute_id,tb.token from task_package ta,
+		(select task_execute_id,task_package_id,token,task_execute_finish,i.info_id from task_execute t, 
+		(select info_id,clazz_id from info where info_id=#{params.info_id}) i
+		where t.clazz_id=i.clazz_id and t.task_execute_finish=#{params.task_execute_finish}) tb where ta.task_package_id=tb.task_package_id) thp where p.token=thp.token
+		limit #{start},#{pageCount}
+	</select>
+	
+	 
+	
+	<update id="update">
+		update task_execute set task_execute_finish=#{task_execute_finish} where task_execute_id = #{task_execute_id}
+	</update>
+	
+	<select id="select_answer" resultType="Task_execute">
+    		 select * from
+    		 (<include refid="answer"/>) tb 
+    	</select>
+    	
+	<sql id="answer">
+				select t.task_id,t.task_name,t.task_type,
+				t.task_option,t.task_correct,t.task_package_id, 
+				ta.task_answer_id,
+				ta.task_answer_answer,ta.task_answer_score,
+				ifnull(ta.info_id,0) info_id,ta.task_answer_time,ifnull(ta.token,0) token from task t
+				left join (select * from task_answer where 1=1
+				<!--  and info_id = 9
+				and token = 1
+				 ) ta
+				 on t.task_id=ta.task_id where t.task_package_id=52  -->
+				 <if test="info_id != 0">
+					and info_id = #{info_id}
+			   </if>
+			   <if test="token != null and token!= ''">
+					and token = #{token}
+			   </if>
+			     ) ta
+				 on t.task_id=ta.task_id where t.task_package_id=#{task_package_id}
+		</sql>
+		
+		
+		<!-- 课后布置作业 -->
+		<select id="selectInfoId" parameterType="java.lang.Integer" resultType="Info">
+			select info_id from info where clazz_id=#{clazz_id}
+		</select>
+		
+		<insert id="insertInstanceTask" parameterType="Task_execute">
+			insert into task_execute (task_package_id,clazz_id,token,info_id,task_execute_finish) 
+			values (#{task_package_id},#{clazz_id},#{token},#{info_id},#{task_execute_finish})
+		</insert>
+
+</mapper>

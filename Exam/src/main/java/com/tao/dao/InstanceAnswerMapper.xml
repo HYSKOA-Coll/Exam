@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.InstanceAnswerMapper"> 
+
+	   	<!-- 通过clazz_id查询学生 -->
+    <select id="selectInfo" parameterType="java.lang.Integer" resultType="Info">
+        select info_id,info_num,info_name from info where clazz_id=#{clazz_id}
+    </select>
+    
+    	 <!-- 添加 -->
+    <insert id="addAnswer" parameterType="InstanceAnswer">
+        INSERT INTO instance_answer 
+        (question_id,info_id,token,clazz_id,packet_id ) 
+        VALUES (#{question_id},#{info_id},#{token},#{clazz_id},#{packet_id})
+    </insert> 
+    
+    	<!-- 查询 -->
+    <select id="selectinstance" parameterType="InstanceAnswer" resultType="InstanceAnswer">
+      select pipl.info_id,pipl.token,pipl.packet_id,qp.packet_name from 
+    	(select pi.info_id,pi.token,ins.packet_id from 
+			(select i.info_id,p.instance_id,p.instance_judge,p.clazz_id,p.token from plan_instance p left join info i 
+			on i.clazz_id=p.clazz_id where p.instance_judge=1 and i.info_id=#{info_id}) pi 
+			left join instance_answer ins on pi.token=ins.token where ins.info_id=#{info_id}) pipl
+			left join question_packet qp on pipl.packet_id=qp.packet_id 
+    </select>
+    
+    	<!-- 修改 -->
+    <update id="update" parameterType="InstanceAnswer">
+    		update instance_answer set answer_student=#{answer_student},answer_score=#{answer_score},answer_prompt=#{answer_prompt}
+    		where token=#{token} and info_id=#{info_id} and question_id=#{question_id}
+    </update>
+    
+    	<!-- 查询  -->
+   	<select id="stuselect" parameterType="InstanceAnswer" resultType="InstanceAnswer">
+	    select info_id,question_id,token,answer_student,answer_score,answer_prompt from instance_answer 
+	    where token=#{token}
+	    <if test="info_id!=null and info_id!=''">
+	     and info_id=#{info_id}
+	    </if>
+    </select>
+    
+    <!-- 学生查询已完成课程详情 -->
+   	<select id="stuSelQuestion" parameterType="InstanceAnswer" resultType="Question">
+   		 select q.question_name,q.question_type,q.question_option,q.question_correct,q.question_prompt,
+   		inp.packet_name,inp.question_id from
+   		(select ins.token,ins.info_id,ins.question_id,ins.packet_id,qup.packet_name 
+   		from question_packet qup left join instance_answer ins 
+   		on ins.packet_id=qup.packet_id where ins.token=#{token} and ins.info_id=#{info_id}) 
+   		inp left join question q on q.question_id=inp.question_id
+   	</select>
+   			
+   	<select id="pSelQ" parameterType="InstanceAnswer" resultType="Question">
+   		select que.question_id,que.packet_id from  
+   		(select packet_id from instance_answer where token=#{token} 
+   		group by packet_id) ins left join question que on que.packet_id=ins.packet_id
+		</select>
+		
+		<select id="selPercent" parameterType="InstanceAnswer" resultType="Percent">
+   		select cc2.question_id,cc1.c1,cc2.c2 from 
+   		(select question_id,cast(
+   		(select count(*) count1 from instance_answer where question_id=#{question_id} and token=#{token} and answer_score=80)*1.0/
+   		(select count(*) count2 from instance_answer where question_id=#{question_id} and token=#{token})*100 as decimal(5,0)) c1 
+   		from instance_answer where question_id=#{question_id} and token=#{token} group by question_id) cc1
+   		left join (select question_id,cast(
+   		(select count(*) count1 from instance_answer where question_id=#{question_id} and token=#{token} and answer_score=100)*1./
+   		(select count(*) count2 from instance_answer where question_id=#{question_id} and token=#{token})*100 as decimal(5,0)) c2 
+   		from instance_answer where question_id=#{question_id} and token=#{token} group by question_id) cc2
+   			on cc1.question_id=cc2.question_id
+   	</select>	
+   	
+   	
+<!-- 			select CAST( ((5*1.0)/10)*100 as decimal(5,0))  -->
+   	
+<!--    	select cc2.question_id,cc1.c1,cc2.c2 from 
+   		(select question_id,cast(
+   		(select count(*) count1 from instance_answer where question_id=20 and token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and answer_score=80)*1.0/
+   		(select count(*) count2 from instance_answer where question_id=20 and token='e6e4e0eb0c72485e94ca7f7852c9f0dd')*100 as decimal(5,0)) c1 
+   		from instance_answer where question_id=20 and token='e6e4e0eb0c72485e94ca7f7852c9f0dd' group by question_id) cc1
+   		left join (select question_id,cast(
+   		(select count(*) count1 from instance_answer where question_id=20 and token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and answer_score=100)*1./
+   		(select count(*) count2 from instance_answer where question_id=20 and token='e6e4e0eb0c72485e94ca7f7852c9f0dd')*100 as decimal(5,0)) c2 
+   		from instance_answer where question_id=20 and token='e6e4e0eb0c72485e94ca7f7852c9f0dd' group by question_id) cc2
+   			on cc1.question_id=cc2.question_id -->
+   		<!-- 	select cc2.question_id,cc1.c1,cc2.c2 from 
+   		(select question_id,cast((select count(*) count1 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd')*1./(select count(*) count2 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and answer_score=80) as decimal(18,2)) c1 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' group by question_id) cc1
+   			left join (select question_id,cast((select count(*) count1 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and question_id=18)*1./(select count(*) count2 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and answer_score=100) as decimal(18,2)) c2 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' group by question_id) cc2
+   			on cc1.question_id=cc2.question_id
+   			select cast(
+   			(select count(*) count1 
+   			from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and question_id=18)*1./
+   			(select count(*) count2 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and question_id=18 and answer_score=80) as decimal(18,2)) 
+   			c1 from instance_answer where token='e6e4e0eb0c72485e94ca7f7852c9f0dd' and question_id=18 group by question_id -->
+<!--   select q.question_id,q.question_name,q.question_type,q.question_option,q.question_correct,q.question_prompt,
+   		ins.token,ins.info_id,ins.question_id 
+   		from question q right join instance_answer ins on q.question_id=ins.question_id 
+   		where ins.token=#{token} and ins.info_id=#{info_id} -->
+<!--  <select id="taeselect" parameterType="InstanceAnswer" resultType="InstanceAnswer">
+    	select i.info_id,i.question_id,i.token,i.answer_student,i.answer_score,i.answer_prompt,inf.info_id,inf.info_name 
+    	from instance_answer i left join info inf on i.info_id=inf.info_id where i.token=#{token}</select> -->
+   <!--select ins.packet_id,ins.info_id,ins.token from 
+			(select i.info_id,p.instance_id,p.instance_judge,p.clazz_id,p.token from plan_instance p left join info i 
+			on i.clazz_id=p.clazz_id where p.instance_judge=1 and i.info_id=#{info_id}) pi 
+			left join instance_answer ins on pi.token=ins.token where ins.info_id=#{info_id} -->
+    <!--select pi.token,ins.packet_id,ins.info_id from 
+			(select i.info_id,p.instance_id,p.instance_judge,p.clazz_id,p.token from plan_instance p left join info i 
+			on i.clazz_id=p.clazz_id where p.instance_judge=1 and i.info_id=48) pi 
+			right join instance_answer ins on pi.token=ins.token where ins.info_id=48 -->
+			
+</mapper> 

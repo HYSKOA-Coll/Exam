@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.StudentmanMapper">
+
+    <insert id="insert" parameterType="com.tao.entity.Studentman">
+    insert into info (info_num,info_name,info_gender,info_phone,info_judge,clazz_id) 
+    values(#{info_num},#{info_name},#{info_gender},#{info_phone},#{info_judge},#{clazz_id})
+    </insert>
+    
+    <update id="update" parameterType="com.tao.entity.Studentman">
+    update info set info_name=#{info_name},info_gender=#{info_gender} where info_num = #{info_num}
+    </update>
+    
+    <select id="selectlist" parameterType="com.tao.entity.Studentman" resultType="java.util.Map">
+   select * from info where info_judge=1 and clazz_id = #{clazz_id} 
+    </select>
+    
+     <delete id="delete" parameterType="java.lang.Integer">
+  delete from info where info_id = #{info_id}
+    </delete>
+    
+    <select id="selectalllist" parameterType="com.tao.entity.Studentman" resultType="java.util.Map">
+   select * from info where info_judge =1 and(<include refid="basesql"/>)
+    </select> 
+    
+    <select id="selectcount" parameterType="com.tao.entity.Studentman" resultType="int">
+   select count(*) from info where clazz_id = #{clazz_id}
+    </select> 
+    
+    <!-- <select id="select" parameterType="com.tao.entity.Studentman" resultType="java.util.Map">
+   select * from info where info_judge =1 and(<include refid="basesql"/>)
+    </select>  -->
+    <sql id="basesql">
+           <if test="params.all != null">
+                   info_id like #{params.all} or info_name like #{params.all} or info_gender like #{params.all}
+             </if>
+ 
+       </sql>  
+</mapper>

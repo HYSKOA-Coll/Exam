@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+    <struts>
+		<constant name="struts.devMode" value="true"/> 
+	
+	<package name="Task_package" extends="json-default" namespace="/Taskp">
+		<action name="del_Task_pack" class="com.tao.action.Task_packageAction" method="del_Task_pack">
+			 <result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+			</action>
+			
+			<action name="getplan2" class="com.tao.action.Task_packageAction" method="getplan">
+			 <result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+			</action>
+			
+			<action name="insert123" class="com.tao.action.Task_packageAction" method="insert">
+				<result type="json">
+					<param name="root">responseJSON</param>
+				</result> 
+			</action>
+	</package>
+	
+	<package name="Task_package2" extends="struts-default" namespace="/Taskp2">
+		<action name="getTask_pack" class="com.tao.action.Task_packageAction" method="getTask_pack">
+			<result name="success">/teacher/homework.jsp</result>
+		</action>
+		
+		<action name="getplan" class="com.tao.action.PlanAction" method="getplan">
+	    	<result name="success">/teacher/selplan.jsp</result>
+ 		</action>
+ 		
+ 		<!-- <action name="getplan" class="com.tao.action.PlanAction" method="getplan">
+	    	<result name="success">/teacher/addhomework.jsp</result>
+ 		</action> -->
+	</package>
+	
+	</struts>

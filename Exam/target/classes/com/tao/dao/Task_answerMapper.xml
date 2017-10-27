@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.Task_answerMapper">
+
+<select id="select" resultType="Task_answer">
+		select * from task_answer where info_id = #{info_id} and task_id=#{task_id} and token = #{token}
+</select> 
+
+<insert id="insert">
+		insert into task_answer values(#{task_answer_id},#{task_answer_answer},#{task_answer_score},#{task_answer_time},#{token},#{task_package_id},#{task_id},#{info_id})
+</insert>
+	
+	<update id="update">
+		update task_answer set task_answer_answer=#{task_answer_answer} and task_answer_time=#{task_answer_time} where task_answer_id=#{task_answer_id}
+	</update>
+</mapper>

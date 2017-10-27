@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.StudentlistMapper">
+	<insert id="insert" parameterType="com.tao.entity.Studentlist">
+    insert into studentlist  (college_id ,college_name,major_id,major_name,clazz_id,clazz_name) 
+    values(#{college_id},#{college_name},#{major_id},#{major_name},#{clazz_id},#{clazz_name})
+    </insert>
+   		 <!--查询学院对应专业的对象-->
+    <select id="selectclazzlist"  parameterType="com.tao.entity.Studentlist" resultType="com.tao.entity.Studentlist">
+   			<!--  select major_id,major_name,college_id from major where college_id=#{college_id}; -->
+   		 select * from studentlist
+    </select>
+    <delete id="delete"  parameterType="com.tao.entity.Studentlist">
+   			<!--  select major_id,major_name,college_id from major where college_id=#{college_id}; -->
+   		delete from studentlist where clazz_id = #{clazz_id};
+    </delete>
+</mapper>

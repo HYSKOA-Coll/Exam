@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.Task_packageMapper">
+
+	<select id="selectTotalRows" resultType="java.lang.Integer">
+		select count(*) from 
+					(select t.task_package_id,t.task_package_name,t.task_package_time,t.info_id,tb.info_name,t.plan_id,tb.plan_name,tb.plan_apply,tb.plan_time from task_package t
+			left join 
+					(select p.plan_id,p.plan_name,p.plan_time,p.plan_apply,p.info_id,i.info_name from plan p left join info i on p.info_id=i.info_id) tb 
+			on t.plan_id=tb.plan_id) 
+		unitedTable where 1=1
+		<if test="conditions2.info_id != 0 and conditions2.info_id !=null and conditions2.info_id !=''">
+			and info_id=#{conditions2.info_id}
+		</if>
+		<if test="conditions2.nameOrapply != null and conditions2.nameOrapply !=''">
+			AND (task_package_name lIKE #{conditions2.nameOrapply} OR plan_apply LIKE #{conditions2.nameOrapply})
+		</if>
+	</select>
+	
+	<select id="selectPageList" resultType="Task_package">
+		select * from
+			(select t.task_package_id,t.task_package_name,t.task_package_time,t.info_id,tb.info_name,t.plan_id,tb.plan_name,tb.plan_apply,tb.plan_time from task_package t
+			left join 
+					(select p.plan_id,p.plan_name,p.plan_time,p.plan_apply,p.info_id,i.info_name from plan p left join info i on p.info_id=i.info_id) tb 
+			on t.plan_id=tb.plan_id) 
+		unitedTable where 1=1
+		<if test="conditions2.info_id != 0 and conditions2.info_id !=null and conditions2.info_id !=''">
+			and info_id=#{conditions2.info_id}
+		</if>
+		<if test="conditions2.nameOrapply != null and conditions2.nameOrapply !=''">
+			AND (task_package_name lIKE #{conditions2.nameOrapply} OR plan_apply LIKE #{conditions2.nameOrapply})
+		</if>
+		limit ${start},${pageCount}
+	</select>
+	
+	<delete id="delete" >
+		delete from task_package where task_package_id = #{task_package_id}
+	</delete>
+	
+	<select id="select" parameterType="Task_package" resultType="Task_package">
+		select * from task_package where task_package_id = #{task_package_id}
+	</select>
+	
+	<select id="select_n" parameterType="Task_package" resultType="Task_package">
+		select * from task_package where task_package_time = #{task_package_time}
+	</select>
+	
+	<insert id="insert" parameterType="Task_package">
+		insert into task_package values (0,#{task_package_name},#{task_package_time},#{plan_id},#{info_id})
+	</insert>
+</mapper>

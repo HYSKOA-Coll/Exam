@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tao.dao.MarkingMapper">
+
+    <select id="selectplayclazz"  parameterType="com.tao.entity.Marking" resultType="com.tao.entity.Marking">
+   		select clazz_id,clazz_name,major_id from clazz
+    </select>
+
+    	 <select id="selecthomeworklist"  parameterType="com.tao.entity.Marking" resultType="com.tao.entity.Marking">
+   		select * from task_package 
+    </select>
+    
+    <!-- 查询全部的作业列表 -->
+     <select id="selecthwlist"  parameterType="com.tao.entity.Marking" resultType="com.tao.entity.Marking">
+<!-- select plan.plan_id,plan.plan_name,plan.plan_time, plan.info_id,info.info_id,info.info_name,info.clazz_id,clazz.clazz_id,clazz.clazz_name  from plan join task_package on plan.plan_id = task_package.plan_id join info on plan.info_id = info.info_id join clazz on clazz.clazz_id = info.clazz_id; -->
+    select plan.plan_id,plan.plan_name,plan.plan_time, plan.info_id,info.info_id,info.info_name,info.clazz_id,clazz.clazz_id,clazz.clazz_name  from plan join task_package on plan.plan_id = task_package.plan_id join info on plan.info_id = info.info_id join clazz on clazz.clazz_id = info.clazz_id;
+    </select>
+</mapper>

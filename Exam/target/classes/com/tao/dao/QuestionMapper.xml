@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tao.dao.QuestionMapper">
+
+	     	<!-- 添加 -->
+    <insert id="insertlist" parameterType="Question">
+        INSERT INTO question 
+        (question_name,question_type,question_option,question_correct,question_prompt,packet_id,info_id,media_id ) 
+        VALUES (#{question_name},#{question_type},#{question_option},#{question_correct},#{question_prompt},#{packet_id},#{info_id},#{media_id})
+    </insert> 
+
+	 <!-- 删除  -->
+   <delete id="delete" parameterType="java.lang.Integer">
+      DELETE FROM question WHERE packet_id=#{packet_id}
+   </delete>
+
+		<!-- 查询  -->
+		<select id="questionList" parameterType="java.lang.Integer" resultType="Question">
+			SELECT * FROM question WHERE packet_id=#{packet_id}
+		</select>
+		
+		<!-- 学生分页查询 -->
+		<select id="selectTotalRows" resultType="java.lang.Integer">
+			SELECT count(*) FROM instance_answer where token=#{params.token} and info_id=#{params.info_id} and answer_prompt is null
+		</select>
+		<select id="selectPageList" resultType="Question">
+	 		select q.question_id,q.question_type,q.question_option,q.question_correct,q.question_prompt,q.media_id,q.question_name,ia.info_id,ia.token,ia.question_id,ia.answer_prompt
+			from question q left join instance_answer ia on q.question_id=ia.question_id 
+			where ia.token=#{params.token} and ia.info_id=#{params.info_id} and ia.answer_prompt is null
+			LIMIT #{start},#{pageCount}
+		</select>
+
+
+			<!-- select q.question_id,q.question_type,q.question_option,q.question_correct,q.question_prompt,q.media_id,q.question_name,qp.packet_id,qp.packet_name 
+			from question q left join question_packet qp 
+			on q.packet_id=qp.packet_id where qp.packet_id=#{params.packet_id} -->
+
+<!-- 			select qqp.question_type,qqp.question_option,qqp.question_correct,qqp.question_prompt,qqp.media_id,qqp.question_name,qqp.packet_id,qqp.packet_name,sa.question_id,sa.student_answer,sa.token,sa.info_id from
+      (select q.question_id,q.question_type,q.question_option,q.question_correct,q.question_prompt,q.media_id,q.question_name,qp.packet_id,qp.packet_name 
+			from question q left join question_packet qp 
+			on q.packet_id=qp.packet_id where qp.packet_id=25) qqp left join student_answer sa on qqp.question_id=sa.question_id where sa.question_id=18 and sa.token=aee827c526da4833bdaf3a1ed52993a1 and sa.info_id=48 -->
+</mapper>   
